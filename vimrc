@@ -7,7 +7,12 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 
+" Langs
 Plugin 'StanAngeloff/php.vim'
+Plugin 'jwalton512/vim-blade'
+Plugin 'pangloss/vim-javascript'
+
+" Functionality
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'xolox/vim-easytags'
