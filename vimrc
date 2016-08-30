@@ -60,6 +60,9 @@ let g:airline_powerline_fonts = 1
 set nowrap
 set textwidth=0 wrapmargin=0
 
+" Airline
+let g:airline_theme='papercolor'
+
 " AutoComplete
 let g:ycm_add_preview_to_completeopt = 0
 
