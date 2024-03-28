@@ -20,12 +20,6 @@ symlink_or_ask() {
 }
 
 # Symlinks
-symlink_or_ask ~/.dotfiles/bash_profile ~/.bash_profile
-symlink_or_ask ~/.dotfiles/gitconfig ~/.gitconfig
-symlink_or_ask ~/.dotfiles/gitignore_global ~/.gitignore_global
-symlink_or_ask ~/.dotfiles/vimrc ~/.vimrc
-symlink_or_ask ~/.dotfiles/gvimrc ~/.gvimrc
-
-# VIM
-vim +BundleInstall +BundleClean +BundleClean +quitall
-
+symlink_or_ask ~/.dotfiles/nvim ~/.config/nvim
+symlink_or_ask ~/.dotfiles/.antigenrc ~/.antigenrc
+symlink_or_ask ~/.dotfiles/.zshrc ~/.zshrc
