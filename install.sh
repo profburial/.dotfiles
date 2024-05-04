@@ -19,7 +19,11 @@ symlink_or_ask() {
   fi
 }
 
+# NvChad
+git clone https://github.com/NvChad/starter ~/.config/nvim
+mkdir -p ~/config/nvim/lua/custom
+
 # Symlinks
-symlink_or_ask ~/.dotfiles/nvim ~/.config/nvim
+symlink_or_ask ~/.dotfiles/nvim/custom ~/.config/nvim/lua/custom
 symlink_or_ask ~/.dotfiles/.antigenrc ~/.antigenrc
 symlink_or_ask ~/.dotfiles/.zshrc ~/.zshrc
