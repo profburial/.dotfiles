@@ -124,6 +124,8 @@ export PATH="$HOME/bin:$PATH"
 # Aliases
 alias vi="nvim"
 alias vim="nvim"
+alias rails="doppler run -- rails"
+alias rspec="doppler run -- rspec"
 
 # antigen
 source ~/antigen.zsh

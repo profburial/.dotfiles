@@ -16,14 +16,19 @@ local plugins = {
         "astro-language-server",
         "bicep-lsp",
         "marksman",
+        "csharp-language-server@0.5.7",
+        "ruff",
+        "ruff-lsp",
         "pyright",
         "tailwindcss-language-server",
         "typescript-language-server",
         "eslint-lsp",
-        "eslint-d",
+        "eslint_d",
         "prettier",
+        "intelephense",
+        "easy-coding-standard",
         "ruby-lsp",
-        "solargraph",
+        "standardrb",
         "gopls",
       },
     },
@@ -43,14 +48,17 @@ local plugins = {
         "tsx",
         "json",
         "astro",
+        "php",
         -- custom
         "bash",
         "bicep",
+        "c_sharp",
         "python",
         "go",
         "prisma",
         "scss",
         "terraform",
+        "ruby",
         -- low level
         "c",
         "zig"
@@ -60,6 +68,23 @@ local plugins = {
   {
     "NvChad/nvim-colorizer.lua",
     enabled = false,
+  },
+  {
+    "ThePrimeagen/vim-be-good",
+    cmd = "VimBeGood",
+  },
+  {
+    "nvim-web-devicons",
+    opts = {
+      strict = true,
+      override_by_extension = {
+        astro = {
+          icon = "",
+          color = "#EF8547",
+          name = "astro",
+        },
+      },
+    }
   },
   {
     "stevearc/conform.nvim",

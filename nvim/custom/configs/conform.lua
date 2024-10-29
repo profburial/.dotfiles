@@ -9,6 +9,8 @@ local options = {
     typescriptreact = { "prettier", "eslint_d" },
     javascript = { "prettier", "eslint_d" },
     javascriptreact = { "prettier", "eslint_d" },
+    python = { "ruff_lsp" },
+    php = { "easy-coding-standard" },
     css = { "prettier" },
     html = { "prettier" },
 
@@ -34,7 +36,11 @@ local options = {
       return
     end
     -- ...additional logic...
-    return { async = true, timeout_ms = 500, lsp_fallback = true }
+    return {
+      async = true,
+      timeout_ms = 500,
+      lsp_fallback = true
+    }
   end,
 }
 
