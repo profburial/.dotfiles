@@ -1,0 +1,2 @@
+NAMESPACE,NAME,CONTAINER,PORTS,URL,C,N,VALID,AGE
+redis,redis-master-0,redis,6379:6379,http://localhost:6379/,2,200,,10h

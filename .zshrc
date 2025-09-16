@@ -103,14 +103,23 @@ source $ZSH/oh-my-zsh.sh
 
 # Functions
 
-function kube_set_content() 
-{
-    kubectl config set-context --current --namespace=$1
-}
-
 function aws_profile() {
     export AWS_PROFILE=$1
 }
+
+function port_forward() 
+{
+	sudo sysctl -w net.inet.ip.forwarding=1
+	sudo sysctl -w net.inet.ip.fw.enable=1
+}
+
+function ssh_copy()
+{
+    pbcopy < ~/.ssh/id_rsa.pub
+}
+
+# k9s
+export K9S_CONFIG_DIR="$HOME/.config/k9s"
 
 # Go
 export PATH=$PATH:/usr/local/go/bin
@@ -132,27 +141,22 @@ source ~/antigen.zsh
 antigen init ~/.antigenrc
 
 # Home Lab
-alias plex-server="ssh profburial@192.168.168.199"
-alias k8s-control="ssh profburial@192.168.168.201"
-alias k8s-0="ssh profburial@192.168.168.223"
-alias k8s-1="ssh profburial@192.168.168.221"
-
-# asdf
-. "$HOME/.asdf/asdf.sh"
-# append completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
-# initialise completions with ZSH's compinit
-autoload -Uz compinit && compinit
+alias plex-server="ssh profburial@192.168.1.127"
+alias prof-utils="ssh profburial@192.168.1.79"
+alias k8s-control="ssh profburial@192.168.1.84"
+alias k8s-1="ssh profburial@192.168.1.207"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+autoload -U +X bashcompinit && bashcompinit
+
+# asdf
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
-
-# Generated for envman. Do not edit.
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

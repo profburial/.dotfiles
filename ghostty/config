@@ -1,0 +1,18 @@
+theme = catppuccin-mocha
+window-theme = ghostty
+font-family = RobotoMono Nerd Font
+font-size = 18
+font-thicken
+
+macos-titlebar-style = tabs
+copy-on-select = clipboard
+link-url
+
+keybind = super+t=toggle_quick_terminal
+keybind = ctrl+shift+t=new_tab
+keybind = super+r=new_split:right
+keybind = super+b=new_split:down
+keybind = alt+shift+j=goto_split:bottom
+keybind = alt+shift+k=goto_split:top
+keybind = alt+shift+h=goto_split:left
+keybind = alt+shift+l=goto_split:right
