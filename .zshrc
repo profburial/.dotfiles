@@ -73,6 +73,9 @@ plugins=(
     git
 )
 
+# Fixes spaceship in gnome terminal
+SPACESHIP_PROMPT_ASYNC=false
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -83,11 +86,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -136,15 +139,25 @@ alias vim="nvim"
 alias rails="doppler run -- rails"
 alias rspec="doppler run -- rspec"
 
-# antigen
-source ~/antigen.zsh
-antigen init ~/.antigenrc
-
 # Home Lab
 alias plex-server="ssh profburial@192.168.1.127"
 alias prof-utils="ssh profburial@192.168.1.79"
 alias k8s-control="ssh profburial@192.168.1.84"
 alias k8s-1="ssh profburial@192.168.1.207"
+
+# Huggingface
+export HF_HOME=/run/media/profburial/Data-Fast/hf_data
+export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH
+
+# cuda
+export CUDA_VISIBLE_DEVICES=0
+
+# asdf
+. "$HOME/.asdf/asdf.sh"
+# append completions to fpath
+fpath=(${ASDF_DIR}/completions $fpath)
+# initialise completions with ZSH's compinit
+autoload -Uz compinit && compinit
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -153,10 +166,14 @@ export NVM_DIR="$HOME/.nvm"
 
 autoload -U +X bashcompinit && bashcompinit
 
-# asdf
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
+
+# antigen
+source ~/antigen.zsh
+antigen init ~/.antigenrc
+
+# opencode
+export PATH=/home/profburial/.opencode/bin:$PATH
