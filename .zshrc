@@ -132,6 +132,7 @@ export GPG_TTY=$(tty)
 
 # User specific aliases and functions
 export PATH="$HOME/bin:$PATH"
+export PATH="/opt/nvim/bin:$PATH"
 
 # Aliases
 alias vi="nvim"
@@ -140,10 +141,10 @@ alias rails="doppler run -- rails"
 alias rspec="doppler run -- rspec"
 
 # Home Lab
-alias plex-server="ssh profburial@192.168.1.127"
-alias prof-utils="ssh profburial@192.168.1.79"
-alias k8s-control="ssh profburial@192.168.1.84"
-alias k8s-1="ssh profburial@192.168.1.207"
+alias k8s-control="ssh profburial@k8s-control"
+alias k8s-0="ssh profburial@profk8s-0"
+alias k8s-1="ssh profburial@profk8s-1"
+alias prof-utils="ssh profburial@prof-utils"
 
 # Huggingface
 export HF_HOME=/run/media/profburial/Data-Fast/hf_data

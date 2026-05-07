@@ -7,12 +7,12 @@ ask_should_symlink() {
   while true; do
     read -p "Do you want to symlink $src -> $dest ? [y/n] " yn
     case $yn in
-      [Yy]*)
-        ln -sfn "$src" "$dest"
-        break
-        ;;
-      [Nn]*) return ;;
-      *) echo "Please answer yes or no." ;;
+    [Yy]*)
+      ln -sfn "$src" "$dest"
+      break
+      ;;
+    [Nn]*) return ;;
+    *) echo "Please answer yes or no." ;;
     esac
   done
 }
@@ -29,6 +29,15 @@ symlink_or_ask() {
 }
 
 DOTFILES="$HOME/.dotfiles"
+
+# Install neovim v0.11.7
+curl -LO https://github.com/neovim/neovim/releases/download/v0.11.7/nvim-macos-arm64.tar.gz
+xattr -c ./nvim-macos-arm64.tar.gz
+tar xzvf nvim-macos-arm64.tar.gz
+sudo mv nvim-macos-arm64 /opt/nvim
+rm -f nvim-macos-arm64.tar.gz
+echo 'export PATH="/opt/nvim/bin:$PATH"' >>~/.zshrc
+source ~/.zshrc
 
 # Nuke neovim config
 rm -rf ~/.config/nvim
