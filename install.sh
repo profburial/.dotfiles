@@ -24,7 +24,7 @@ Linux | Darwin) ;;
   ;;
 esac
 
-for source in nvim ghostty k9s/config.yaml k9s/aliases.yaml k9s/skins .antigenrc .zshrc antigen.zsh; do
+for source in nvim ghostty herdr/config.toml k9s/config.yaml k9s/aliases.yaml k9s/skins .antigenrc .zshrc antigen.zsh; do
   [ -e "$DOTFILES/$source" ] || {
     echo "Missing source: $DOTFILES/$source" >&2
     exit 1
@@ -62,6 +62,7 @@ link_config() {
 
 link_config "$DOTFILES/nvim" "$CONFIG_HOME/nvim"
 link_config "$DOTFILES/ghostty" "$CONFIG_HOME/ghostty"
+link_config "$DOTFILES/herdr/config.toml" "$CONFIG_HOME/herdr/config.toml"
 if [ "$PLATFORM" = Darwin ]; then
   link_config "$DOTFILES/aerospace" "$CONFIG_HOME/aerospace"
 fi

@@ -20,7 +20,7 @@ exec zsh
 
 The installer requires Bash and standard system utilities. Install Zsh and Git before starting the configured shell. Git and network access are needed on the first shell launch to download the Antigen plugins and Spaceship theme; Oh My Zsh is loaded through Antigen, so a separate installation is unnecessary. With Antigen or Git absent, the shell uses basic completion and a plain prompt.
 
-The installer uses the checkout's actual location and `${XDG_CONFIG_HOME:-$HOME/.config}`. Keep the checkout in place because installed files are symlinks. It installs AeroSpace only on macOS. K9s gets shared config, aliases and skins; cluster state and screen dumps stay local. Ghostty supplies both `config` and `config.ghostty` filenames for compatibility across versions.
+The installer uses the checkout's actual location and `${XDG_CONFIG_HOME:-$HOME/.config}`. Keep the checkout in place because installed files are symlinks. It installs AeroSpace only on macOS. K9s gets shared config, aliases and skins; cluster state and screen dumps stay local. Herdr gets only `config.toml`; its session, logs and socket stay local. Ghostty supplies both `config` and `config.ghostty` filenames for compatibility across versions.
 
 Existing files, directories and conflicting symlinks are moved to adjacent `.backup.TIMESTAMP` paths, with a numeric suffix when needed. The installer prints each backup location. Correct links are left alone on reruns. Neovim data, cache and state are preserved. To restore a config, remove only the installed symlink after checking its destination, then move its backup back into place. With the old installer, the K9s directory itself may have been a symlink; it is backed up before individual files are linked.
 
@@ -54,6 +54,8 @@ See [TVIM's README](nvim/README.md) for shortcuts, formatting, language setup an
 ## Machine settings
 
 Put private or machine-specific settings in `~/.zshrc.local`.
+
+On macOS the shell loads Homebrew through `brew shellenv` from the Apple Silicon or Intel prefix, so `HOMEBREW_PREFIX`, `MANPATH` and `INFOPATH` are set alongside `PATH`. Linux does not use Homebrew. Runtime managers (asdf, nvm, pyenv) are initialized afterwards when present.
 
 The shared config keeps personal SSH aliases. `rails` and `rspec` use Doppler only when it is installed. `ssh_copy [public-key-path]` supports macOS, Wayland and X11 clipboards; its default key is Ed25519, falling back to RSA. `port_forward` enables IPv4 forwarding through the platform's sysctl and requests sudo when called.
 

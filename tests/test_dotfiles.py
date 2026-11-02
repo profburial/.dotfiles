@@ -21,7 +21,7 @@ class DotfilesTests(unittest.TestCase):
         self.home.mkdir()
         self.repo = self.base / "checkout with spaces"
         self.repo.mkdir()
-        for name in ("install.sh", ".zshrc", ".antigenrc", "antigen.zsh", "nvim", "ghostty", "k9s", "aerospace"):
+        for name in ("install.sh", ".zshrc", ".antigenrc", "antigen.zsh", "nvim", "ghostty", "herdr", "k9s", "aerospace"):
             source = ROOT / name
             if source.is_dir():
                 shutil.copytree(source, self.repo / name, symlinks=True)
@@ -66,6 +66,7 @@ class DotfilesTests(unittest.TestCase):
             self.assert_link(self.config / name, self.repo / name)
         for name in ("config.yaml", "aliases.yaml", "skins"):
             self.assert_link(self.config / "k9s" / name, self.repo / "k9s" / name)
+        self.assert_link(self.config / "herdr/config.toml", self.repo / "herdr/config.toml")
         for name in (".zshrc", ".antigenrc", "antigen.zsh"):
             self.assert_link(self.home / name, self.repo / name)
         self.assertFalse((self.config / "aerospace").exists())
@@ -120,7 +121,7 @@ class DotfilesTests(unittest.TestCase):
         self.assertTrue((self.config / "k9s").is_dir())
         self.assertFalse((self.config / "k9s").is_symlink())
         backups = list(self.config.glob("k9s.backup.*"))
-        self.assertEqual([p.resolve() for p in backups], [self.repo / "k9s"])
+        self.assertEqual([p.resolve() for p in backups], [(self.repo / "k9s").resolve()])
         self.assert_link(self.config / "k9s/config.yaml", self.repo / "k9s/config.yaml")
         self.assertFalse((self.repo / "k9s/config.yaml").is_symlink())
 
@@ -132,6 +133,10 @@ class DotfilesTests(unittest.TestCase):
         self.assertEqual(list(self.home.iterdir()), [])
         del self.environment["XDG_CONFIG_HOME"]
         (self.repo / "antigen.zsh").unlink()
+        self.install(success=False)
+        self.assertEqual(list(self.home.iterdir()), [])
+        shutil.copy2(ROOT / "antigen.zsh", self.repo / "antigen.zsh")
+        (self.repo / "herdr/config.toml").unlink()
         self.install(success=False)
         self.assertEqual(list(self.home.iterdir()), [])
 

@@ -1,11 +1,16 @@
 typeset -U path fpath
 path=("$HOME/bin" "$HOME/.local/bin" "$HOME/.bun/bin" "$HOME/.opencode/bin" $path)
 
-# Include Homebrew before looking for its optional runtime managers.
-for brew_bin in /home/linuxbrew/.linuxbrew/bin "$HOME/.linuxbrew/bin" /usr/local/bin /opt/homebrew/bin; do
-  [[ -d "$brew_bin" ]] && path=("$brew_bin" $path)
-done
-unset brew_bin
+# Homebrew is macOS-only here; shellenv sets PATH, MANPATH, INFOPATH and HOMEBREW_PREFIX before the runtime managers load.
+if [[ "$OSTYPE" == darwin* ]]; then
+  for brew_executable in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    if [[ -x "$brew_executable" ]]; then
+      eval "$("$brew_executable" shellenv)"
+      break
+    fi
+  done
+  unset brew_executable
+fi
 [[ -d /usr/local/go/bin ]] && path+=(/usr/local/go/bin)
 export PATH
 
@@ -94,7 +99,7 @@ ssh_copy() {
 
 if (( $+commands[doppler] )); then
   alias rails='doppler run -- rails'
-  alias rspec='doppler run -- rspec'
+  alias rspec="doppler run -- bundle exec rspec"
 fi
 
 alias prof-utils='ssh profburial@192.168.1.79'
