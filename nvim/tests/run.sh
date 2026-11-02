@@ -5,6 +5,7 @@ cd "$checkout"
 plugin_root="${XDG_DATA_HOME:-$HOME/.local/share}/tvim/lazy"
 [ -d "$plugin_root" ] || { echo 'Provision TVIM plugins first: ./bin/tvim --headless "+Lazy! restore" +qa' >&2; exit 1; }
 trial_root=$(mktemp -d "${TMPDIR:-/tmp}/tvim-tests.XXXXXXXX")
+trial_root=$(CDPATH= cd -- "$trial_root" && pwd -P)
 trap 'rm -rf "$trial_root"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM

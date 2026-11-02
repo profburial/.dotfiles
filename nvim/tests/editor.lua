@@ -79,7 +79,9 @@ examples.dim_file_icons_read_against_the_tree_background = function()
     "Files without a known type get an icon that reads against the tree background: " .. fallback
   )
   local _, astro = devicons.get_icon_color("site.astro", "astro")
-  t.equal(astro, "#EF8547", "Icons that already read keep their color")
+  assert(contrast.ratio(astro, background) >= 4.5, "The custom Astro icon reads against the tree background")
+  local _, markdown = devicons.get_icon_color("notes.md", "md")
+  t.equal(markdown:lower(), "#dddddd", "Icons that already read keep their color")
 end
 
 examples.buffer_navigation_preserves_unsaved_work = function()
