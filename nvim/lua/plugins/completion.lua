@@ -42,6 +42,16 @@ return {
         TypeParameter = "󰊄",
       }
 
+      ---@param text string
+      ---@param max_width integer
+      ---@return string
+      local function truncate(text, max_width)
+        if #text > max_width then
+          return text:sub(1, max_width) .. "…"
+        end
+        return text
+      end
+
       cmp.setup({
         completion = { completeopt = "menu,menuone" },
         snippet = {
@@ -68,9 +78,9 @@ return {
           format = function(_, item)
             item.kind = " " .. (icons[item.kind] or "") .. " " .. item.kind
             item.menu_hl_group = "Comment"
-            if #item.abbr > 60 then
-              item.abbr = item.abbr:sub(1, 60) .. "…"
-            end
+            -- Bound both columns so the popup leaves room for the documentation float beside it.
+            item.abbr = truncate(item.abbr, 40)
+            item.menu = truncate(item.menu or "", 30)
             return item
           end,
         },

@@ -6,6 +6,12 @@ return {
       strict = true,
       override_by_extension = { astro = { icon = "", color = "#EF8547", name = "astro" } },
     },
+    ---@param opts table
+    ---@return nil
+    config = function(_, opts)
+      require("nvim-web-devicons").setup(opts)
+      require("themes.terry").apply_readable_file_icons()
+    end,
   },
   {
     "nvim-tree/nvim-tree.lua",

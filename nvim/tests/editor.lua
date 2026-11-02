@@ -55,6 +55,33 @@ examples.reapplying_terry_preserves_user_colors = function()
   end
 end
 
+examples.dim_file_icons_read_against_the_tree_background = function()
+  require("lazy").load({ plugins = { "nvim-web-devicons", "nvim-tree.lua" } })
+  vim.cmd.colorscheme("terry")
+  local devicons = require("nvim-web-devicons")
+  local contrast = require("themes.contrast")
+  local tree_background = vim.api.nvim_get_hl(0, { name = "NvimTreeNormal", link = false }).bg
+  local background = string.format("#%06x", tree_background)
+  for _, filename in ipairs({ "package.json", "tsconfig.json" }) do
+    local icon, highlight = devicons.get_icon(filename, nil, { strict = true })
+    local _, color = devicons.get_icon_color(filename, nil, { strict = true })
+    assert(icon and highlight, filename .. " has a file icon")
+    assert(
+      contrast.ratio(color, background) >= 4.5,
+      filename .. " icon " .. color .. " reads against the tree background " .. background
+    )
+    local applied = vim.api.nvim_get_hl(0, { name = highlight, link = false }).fg
+    t.equal(applied, tonumber(color:sub(2), 16), filename .. " icon highlight uses the readable color")
+  end
+  local fallback = string.format("#%06x", vim.api.nvim_get_hl(0, { name = "DevIconDefault", link = false }).fg)
+  assert(
+    contrast.ratio(fallback, background) >= 4.5,
+    "Files without a known type get an icon that reads against the tree background: " .. fallback
+  )
+  local _, astro = devicons.get_icon_color("site.astro", "astro")
+  t.equal(astro, "#EF8547", "Icons that already read keep their color")
+end
+
 examples.buffer_navigation_preserves_unsaved_work = function()
   local first = t.file("buffers/first.txt", { "saved" })
   local second = t.file("buffers/second.txt", { "other" })

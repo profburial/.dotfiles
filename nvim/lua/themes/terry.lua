@@ -31,6 +31,7 @@ palette.base_30 = {
   lightbg = "#2f2e3e",
   pmenu_bg = "#ABE9B3",
   folder_bg = "#89B4FA",
+  tree_guide = "#6f8398",
   lavender = "#c7d1ff",
 }
 
@@ -53,7 +54,30 @@ palette.base_16 = {
   base0F = "#F38BA8",
 }
 
+local contrast = require("themes.contrast")
+
+-- Devicons brand colors assume a near-black background; on Terry's slate tree many fall below WCAG AA.
+local MINIMUM_ICON_CONTRAST = 4.5
+
 local M = {}
+
+---Lighten file-type icon colors that would be hard to read on the file tree background.
+---Icons that already meet the contrast threshold keep their upstream color.
+---@return nil
+function M.apply_readable_file_icons()
+  local devicons = require("nvim-web-devicons")
+  local background = palette.base_30.black
+  local lightened = {}
+  for key, icon in pairs(devicons.get_icons()) do
+    if icon.color then
+      local color = contrast.readable(icon.color, background, MINIMUM_ICON_CONTRAST)
+      if color ~= icon.color then
+        lightened[key] = vim.tbl_extend("force", icon, { color = color })
+      end
+    end
+  end
+  devicons.set_icon(lightened)
+end
 
 ---Apply Terry across retained editor interfaces.
 ---@return nil
@@ -117,7 +141,9 @@ function M.apply()
     NvimTreeFolderName = { fg = p.folder_bg },
     NvimTreeOpenedFolderName = { fg = p.folder_bg, bold = true },
     NvimTreeFolderIcon = { fg = p.folder_bg },
-    NvimTreeIndentMarker = { fg = p.line },
+    NvimTreeIndentMarker = { fg = p.tree_guide },
+    NvimTreeFolderArrowClosed = { fg = p.grey_fg },
+    NvimTreeFolderArrowOpen = { fg = p.grey_fg },
     NvimTreeGitDirty = { fg = p.yellow },
     NvimTreeGitNew = { fg = p.green },
     NvimTreeGitDeleted = { fg = p.red },

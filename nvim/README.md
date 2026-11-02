@@ -187,7 +187,7 @@ Format on save uses Stylua for Lua, Prettier then eslint_d for JavaScript/TypeSc
 | `lua/configs/buffers.lua` | Custom buffer behavior |
 | `lua/configs/ruby.lua` | Ruby-specific behavior |
 | `lua/themes/terry.lua`, `colors/terry.lua` | Terry palette and color scheme |
-
+| `lua/themes/contrast.lua` | Color readability helpers; Terry lightens file icons that fall below WCAG AA on the tree background |
 | `tests/` | Headless behavior tests |
 
 ## Attribution

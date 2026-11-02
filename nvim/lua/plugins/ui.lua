@@ -118,14 +118,7 @@ return {
             end,
           },
         },
-        lualine_z = {
-          {
-            function()
-              return vim.fn.line(".") .. "/" .. vim.fn.virtcol(".")
-            end,
-            icon = "",
-          },
-        },
+        lualine_z = { "progress" },
       },
     },
   },
