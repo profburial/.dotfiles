@@ -1,180 +1,107 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-ZSH_DISABLE_COMPFIX="true"
+typeset -U path fpath
+path=("$HOME/bin" "$HOME/.local/bin" "$HOME/.bun/bin" "$HOME/.opencode/bin" $path)
 
-# Path to your oh-my-zsh installation.
+# Include Homebrew before looking for its optional runtime managers.
+for brew_bin in /home/linuxbrew/.linuxbrew/bin "$HOME/.linuxbrew/bin" /usr/local/bin /opt/homebrew/bin; do
+  [[ -d "$brew_bin" ]] && path=("$brew_bin" $path)
+done
+unset brew_bin
+[[ -d /usr/local/go/bin ]] && path+=(/usr/local/go/bin)
+export PATH
+
+export K9S_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/k9s"
 export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="amuse"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-    git
-)
-
-# Fixes spaceship in gnome terminal
+CASE_SENSITIVE=true
+ENABLE_CORRECTION=true
+COMPLETION_WAITING_DOTS=true
 SPACESHIP_PROMPT_ASYNC=false
 
-source $ZSH/oh-my-zsh.sh
+export ASDF_DATA_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
+[[ -r "$HOME/.asdf/asdf.sh" ]] && source "$HOME/.asdf/asdf.sh"
+[[ -d "$ASDF_DATA_DIR/shims" ]] && path=("$ASDF_DATA_DIR/shims" $path)
+[[ -d "${ASDF_DIR:-$HOME/.asdf}/completions" ]] && fpath=("${ASDF_DIR:-$HOME/.asdf}/completions" $fpath)
 
-# User configuration
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+for nvm_script in "$NVM_DIR/nvm.sh" "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/nvm/nvm.sh" /usr/local/opt/nvm/nvm.sh; do
+  if [[ -r "$nvm_script" ]]; then
+    source "$nvm_script"
+    break
+  fi
+done
+unset nvm_script
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='nvim'
+export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
+[[ -d "$PYENV_ROOT/bin" ]] && path=("$PYENV_ROOT/bin" $path)
+if (( $+commands[pyenv] )); then
+  eval "$(pyenv init - zsh)"
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+if [[ -r "$HOME/antigen.zsh" && -r "$HOME/.antigenrc" ]] && (( $+commands[git] )); then
+  source "$HOME/antigen.zsh"
+  antigen init "$HOME/.antigenrc"
+else
+  autoload -Uz compinit
+  compinit
+  PROMPT='%n@%m %~ %# '
+fi
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+if (( $+commands[nvim] )); then
+  export EDITOR=nvim
+  alias vi=nvim vim=nvim
+elif (( $+commands[vim] )); then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export VISUAL="$EDITOR"
+[[ -t 0 ]] && export GPG_TTY="$(tty)"
 
-# Functions
-
-function aws_profile() {
-    export AWS_PROFILE=$1
+aws_profile() {
+  if (( $# != 1 )); then
+    print -u2 'Usage: aws_profile PROFILE'
+    return 2
+  fi
+  export AWS_PROFILE="$1"
 }
 
-function port_forward() 
-{
-	sudo sysctl -w net.inet.ip.forwarding=1
-	sudo sysctl -w net.inet.ip.fw.enable=1
+port_forward() {
+  case "$OSTYPE" in
+    darwin*) sudo sysctl -w net.inet.ip.forwarding=1 ;;
+    linux*) sudo sysctl -w net.ipv4.ip_forward=1 ;;
+    *) print -u2 "Unsupported platform: $OSTYPE"; return 1 ;;
+  esac
 }
 
-function ssh_copy()
-{
-    pbcopy < ~/.ssh/id_rsa.pub
+ssh_copy() {
+  local public_key="${1:-$HOME/.ssh/id_ed25519.pub}"
+  if (( $# == 0 )) && [[ ! -r "$public_key" ]]; then
+    public_key="$HOME/.ssh/id_rsa.pub"
+  fi
+  [[ -r "$public_key" ]] || { print -u2 "Cannot read public key: $public_key"; return 1; }
+  if (( $+commands[pbcopy] )); then
+    pbcopy < "$public_key"
+  elif [[ -n "$WAYLAND_DISPLAY" ]] && (( $+commands[wl-copy] )); then
+    wl-copy < "$public_key"
+  elif [[ -n "$DISPLAY" ]] && (( $+commands[xclip] )); then
+    xclip -selection clipboard < "$public_key"
+  elif [[ -n "$DISPLAY" ]] && (( $+commands[xsel] )); then
+    xsel --clipboard --input < "$public_key"
+  else
+    print -u2 'Install a clipboard provider: wl-copy (Wayland), xclip/xsel (X11), or pbcopy (macOS).'
+    return 1
+  fi
 }
 
-# k9s
-export K9S_CONFIG_DIR="$HOME/.config/k9s"
+if (( $+commands[doppler] )); then
+  alias rails='doppler run -- rails'
+  alias rspec='doppler run -- rspec'
+fi
 
-# Go
-export PATH=$PATH:/usr/local/go/bin
+alias prof-utils='ssh profburial@192.168.1.79'
+alias k8s-control='ssh profburial@192.168.1.84'
+alias k8s-1='ssh profburial@192.168.1.207'
 
-# GPG
-export GPG_TTY=$(tty)
-
-# User specific aliases and functions
-export PATH="$HOME/bin:$PATH"
-export PATH="/opt/nvim/bin:$PATH"
-
-# Aliases
-alias vi="nvim"
-alias vim="nvim"
-alias rails="doppler run -- rails"
-alias rspec="doppler run -- rspec"
-
-# Home Lab
-alias k8s-control="ssh profburial@k8s-control"
-alias k8s-0="ssh profburial@profk8s-0"
-alias k8s-1="ssh profburial@profk8s-1"
-alias prof-utils="ssh profburial@prof-utils"
-
-# Huggingface
-export HF_HOME=/run/media/profburial/Data-Fast/hf_data
-export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH
-
-# cuda
-export CUDA_VISIBLE_DEVICES=0
-
-# asdf
-. "$HOME/.asdf/asdf.sh"
-# append completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
-# initialise completions with ZSH's compinit
-autoload -Uz compinit && compinit
-
-# nvm
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-autoload -U +X bashcompinit && bashcompinit
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
-# antigen
-source ~/antigen.zsh
-antigen init ~/.antigenrc
-
-# opencode
-export PATH=/home/profburial/.opencode/bin:$PATH
+# Local overrides keep drive mounts, GPU selection and secrets machine-specific.
+if [[ -r "$HOME/.zshrc.local" ]]; then
+  source "$HOME/.zshrc.local"
+fi

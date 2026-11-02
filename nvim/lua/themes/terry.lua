@@ -1,11 +1,11 @@
-local M = {}
+local palette = {}
 
-M.base_30 = {
+palette.base_30 = {
   white = "#ffffff",
   darker_black = "#191828",
-  black = "#2b3e50", --  nvim bg
+  black = "#2b3e50",
   black2 = "#243443",
-  one_bg = "#2b3e50", -- real bg of onedark
+  one_bg = "#2b3e50",
   one_bg2 = "#2b3e50",
   one_bg3 = "#2b3e50",
   grey = "#d5d8dc",
@@ -15,7 +15,7 @@ M.base_30 = {
   red = "#de4242",
   baby_pink = "#ffa5c3",
   pink = "#F5C2E7",
-  line = "#383747", -- for lines like vertsplit
+  line = "#383747",
   green = "#ABE9B3",
   vibrant_green = "#b6f4be",
   nord_blue = "#8bc2f0",
@@ -34,8 +34,7 @@ M.base_30 = {
   lavender = "#c7d1ff",
 }
 
-M.base_16 = {
-  -- base00 = "#2b3e50",
+palette.base_16 = {
   base00 = "#263645",
   base01 = "#243443",
   base02 = "#19242f",
@@ -54,14 +53,119 @@ M.base_16 = {
   base0F = "#F38BA8",
 }
 
-M.polish_hl = {
-  ["@variable"] = { fg = M.base_30.light_grey },
-  ["@property"] = { fg = M.base_30.white },
-  ["@variable.builtin"] = { fg = M.base_30.yellow },
-}
+local M = {}
 
-M.type = "dark"
-
-M = require("base46").override_theme(M, "terry")
+---Apply Terry across retained editor interfaces.
+---@return nil
+function M.apply()
+  vim.cmd.highlight("clear")
+  vim.o.background = "dark"
+  vim.g.colors_name = "terry"
+  local p, b = palette.base_30, palette.base_16
+  local groups = {
+    Normal = { fg = b.base05, bg = b.base00 },
+    NormalFloat = { fg = p.white, bg = p.black },
+    FloatBorder = { fg = p.line, bg = p.black },
+    NormalNC = { fg = b.base05, bg = b.base00 },
+    EndOfBuffer = { fg = b.base00 },
+    Comment = { fg = p.grey_fg2 },
+    LineNr = { fg = p.grey_fg2 },
+    CursorLineNr = { fg = p.white, bold = true },
+    CursorLine = { bg = b.base01 },
+    ColorColumn = { bg = b.base01 },
+    SignColumn = { bg = b.base00 },
+    WinSeparator = { fg = p.line },
+    Visual = { bg = b.base02 },
+    Search = { fg = p.black, bg = p.yellow },
+    IncSearch = { fg = p.black, bg = p.orange },
+    MatchParen = { fg = p.blue, bold = true },
+    Pmenu = { fg = p.white, bg = p.black },
+    PmenuSel = { fg = p.black, bg = p.pmenu_bg },
+    PmenuSbar = { bg = p.black2 },
+    PmenuThumb = { bg = p.grey_fg2 },
+    StatusLine = { fg = p.white, bg = p.statusline_bg },
+    StatusLineNC = { fg = p.grey_fg, bg = p.statusline_bg },
+    TabLine = { fg = p.grey_fg, bg = p.black },
+    TabLineSel = { fg = p.white, bg = b.base00 },
+    TabLineFill = { bg = p.black },
+    String = { fg = b.base0B },
+    Character = { fg = b.base0B },
+    Number = { fg = b.base09 },
+    Boolean = { fg = b.base09 },
+    Constant = { fg = b.base09 },
+    Identifier = { fg = b.base08 },
+    Function = { fg = b.base0D },
+    Statement = { fg = b.base0E },
+    Keyword = { fg = b.base0E },
+    Operator = { fg = b.base05 },
+    PreProc = { fg = b.base0A },
+    Type = { fg = b.base0A },
+    Special = { fg = b.base0C },
+    Delimiter = { fg = b.base05 },
+    Error = { fg = p.red },
+    Todo = { fg = p.yellow, bold = true },
+    ["@variable"] = { fg = p.light_grey },
+    ["@property"] = { fg = p.white },
+    ["@variable.builtin"] = { fg = p.yellow },
+    ["@function"] = { fg = b.base0D },
+    ["@keyword"] = { fg = b.base0E },
+    ["@type"] = { fg = b.base0A },
+    ["@string"] = { fg = b.base0B },
+    ["@comment"] = { fg = p.grey_fg2 },
+    NvimTreeNormal = { fg = p.white, bg = p.black },
+    NvimTreeNormalNC = { fg = p.white, bg = p.black },
+    NvimTreeFolderName = { fg = p.folder_bg },
+    NvimTreeOpenedFolderName = { fg = p.folder_bg, bold = true },
+    NvimTreeFolderIcon = { fg = p.folder_bg },
+    NvimTreeIndentMarker = { fg = p.line },
+    NvimTreeGitDirty = { fg = p.yellow },
+    NvimTreeGitNew = { fg = p.green },
+    NvimTreeGitDeleted = { fg = p.red },
+    NvimTreeWinSeparator = { fg = p.black, bg = p.black },
+    TelescopeNormal = { fg = p.white, bg = p.black },
+    TelescopeBorder = { fg = p.black, bg = p.black },
+    TelescopePromptNormal = { fg = p.white, bg = p.black2 },
+    TelescopePromptBorder = { fg = p.black2, bg = p.black2 },
+    TelescopePromptPrefix = { fg = p.red, bg = p.black2 },
+    TelescopePromptTitle = { fg = p.black, bg = p.red },
+    TelescopePreviewTitle = { fg = p.black, bg = p.green },
+    TelescopeResultsTitle = { fg = p.black, bg = p.black },
+    TelescopeSelection = { bg = p.black2 },
+    TelescopeMatching = { fg = p.blue },
+    CmpItemAbbr = { fg = p.white },
+    CmpItemAbbrMatch = { fg = p.blue, bold = true },
+    CmpItemAbbrDeprecated = { fg = p.grey_fg2, strikethrough = true },
+    CmpItemMenu = { fg = p.grey_fg },
+    CmpItemKind = { fg = p.blue },
+    BufferLineFill = { bg = p.black },
+    BufferLineBackground = { fg = p.grey_fg, bg = p.black },
+    BufferLineBufferSelected = { fg = p.white, bg = b.base00, bold = true },
+    BufferLineBufferVisible = { fg = p.white, bg = p.black2 },
+    BufferLineModified = { fg = p.yellow, bg = p.black },
+    BufferLineModifiedSelected = { fg = p.yellow, bg = b.base00 },
+    BufferLineIndicatorSelected = { fg = p.blue, bg = b.base00 },
+    WhichKey = { fg = p.blue },
+    WhichKeyGroup = { fg = p.purple },
+    WhichKeyDesc = { fg = p.white },
+    WhichKeyNormal = { bg = p.black },
+    IblIndent = { fg = p.line },
+    IblScope = { fg = p.grey_fg2 },
+    GitSignsAdd = { fg = p.green },
+    GitSignsChange = { fg = p.blue },
+    GitSignsDelete = { fg = p.red },
+    DiffAdd = { bg = "#304b44" },
+    DiffChange = { bg = p.black2 },
+    DiffDelete = { fg = p.red, bg = p.black2 },
+    DiffText = { bg = "#3b5069" },
+  }
+  for severity, color in pairs({ Error = p.red, Warn = p.yellow, Info = p.blue, Hint = p.purple }) do
+    groups["Diagnostic" .. severity] = { fg = color }
+    groups["DiagnosticVirtualText" .. severity] = { fg = color }
+    groups["DiagnosticUnderline" .. severity] = { sp = color, undercurl = true }
+  end
+  for name, attributes in pairs(groups) do
+    vim.api.nvim_set_hl(0, name, attributes)
+  end
+end
 
 return M

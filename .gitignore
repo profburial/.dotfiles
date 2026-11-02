@@ -1,0 +1,4 @@
+plans/
+*.log
+__pycache__/
+nvim/lazy-lock.json.before-migration

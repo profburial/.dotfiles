@@ -1,0 +1,96 @@
+---@class LanguagePolicy
+---@field servers table<string, vim.lsp.Config>
+---@field parsers string[]
+---@field formatters_by_ft table<string, string[]>
+---@field tools string[]
+
+---@type LanguagePolicy
+return {
+  servers = {
+    ruby_lsp = {
+      init_options = {
+        formatter = "standardrb",
+        linters = { "standardrb" },
+        addonSettings = { ["Ruby LSP Rails"] = { enablePendingMigrationsPrompt = false } },
+      },
+    },
+    standardrb = {},
+    lua_ls = {
+      settings = {
+        Lua = {
+          runtime = { version = "LuaJIT" },
+          diagnostics = { globals = { "vim" } },
+          workspace = { library = { vim.env.VIMRUNTIME .. "/lua", "${3rd}/luv/library" } },
+        },
+      },
+    },
+    html = {},
+    cssls = {},
+    eslint = {},
+    astro = {},
+    marksman = {},
+    intelephense = {},
+    gopls = {},
+    ruff = {},
+    pyright = {},
+    tailwindcss = {},
+    ts_ls = {},
+  },
+  parsers = {
+    "vim",
+    "lua",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "tsx",
+    "json",
+    "astro",
+    "php",
+    "bash",
+    "bicep",
+    "c_sharp",
+    "python",
+    "go",
+    "prisma",
+    "scss",
+    "terraform",
+    "ruby",
+    "c",
+    "zig",
+    "luadoc",
+    "printf",
+    "vimdoc",
+  },
+  formatters_by_ft = {
+    lua = { "stylua" },
+    javascript = { "prettier", "eslint_d" },
+    javascriptreact = { "prettier", "eslint_d" },
+    typescript = { "prettier", "eslint_d" },
+    typescriptreact = { "prettier", "eslint_d" },
+    python = { "ruff_fix" },
+    css = { "prettier" },
+    html = { "prettier" },
+    sh = { "shfmt" },
+  },
+  tools = {
+    "ruby-lsp",
+    "standardrb",
+    "lua-language-server",
+    "html-lsp",
+    "css-lsp",
+    "eslint-lsp",
+    "astro-language-server",
+    "marksman",
+    "intelephense",
+    "gopls",
+    "ruff",
+    "pyright",
+    "tailwindcss-language-server",
+    "typescript-language-server",
+    "stylua",
+    "prettier",
+    "eslint_d",
+    "shfmt",
+  },
+}

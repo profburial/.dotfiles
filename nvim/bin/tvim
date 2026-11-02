@@ -1,0 +1,26 @@
+#!/bin/sh
+set -eu
+command -v nvim >/dev/null 2>&1 || { echo 'TVIM requires Neovim 0.12.5 or newer on PATH (target: 0.12.6).' >&2; exit 127; }
+checkout=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+config_root=$(mktemp -d "${TMPDIR:-/tmp}/tvim-config.XXXXXXXX")
+child=
+cleanup() { rm -rf "$config_root"; }
+forward_signal() { [ -z "$child" ] || kill -s "$1" "$child" 2>/dev/null || :; }
+trap cleanup EXIT
+trap 'forward_signal INT' INT
+trap 'forward_signal TERM' TERM
+trap 'forward_signal HUP' HUP
+ln -s "$checkout" "$config_root/tvim"
+original_config=${XDG_CONFIG_HOME:-"$HOME/.config"}
+export XDG_CONFIG_DIRS="$original_config:${XDG_CONFIG_DIRS:-/etc/xdg}"
+export XDG_CONFIG_HOME="$config_root"
+export NVIM_APPNAME=tvim
+# An asynchronous child needs explicit terminal input with POSIX job control off.
+nvim "$@" <&0 &
+child=$!
+status=0
+wait "$child" || status=$?
+while kill -0 "$child" 2>/dev/null; do
+  wait "$child" || status=$?
+done
+exit "$status"

@@ -9,7 +9,6 @@ antigen bundle aws
 antigen bundle kubectl
 antigen bundle kubectx 
 antigen bundle pip
-antigen bundle asdf
 antigen bundle gem
 antigen bundle rails
 antigen bundle poetry

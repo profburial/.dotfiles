@@ -1,12 +1,12 @@
-theme = catppuccin-mocha
+theme = Catppuccin Mocha
 window-theme = ghostty
 font-family = RobotoMono Nerd Font
 font-size = 18
-font-thicken
+font-thicken = true
 
 macos-titlebar-style = tabs
 copy-on-select = clipboard
-link-url
+link-url = true
 
 keybind = super+t=toggle_quick_terminal
 keybind = ctrl+shift+t=new_tab
