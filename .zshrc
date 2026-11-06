@@ -15,11 +15,13 @@ fi
 export PATH
 
 export K9S_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/k9s"
-export ZSH="$HOME/.oh-my-zsh"
-CASE_SENSITIVE=true
-ENABLE_CORRECTION=true
-COMPLETION_WAITING_DOTS=true
-SPACESHIP_PROMPT_ASYNC=false
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=10000
+setopt append_history share_history hist_ignore_dups hist_ignore_space
+setopt auto_cd interactive_comments
+unsetopt correct correct_all
+bindkey -e
 
 export ASDF_DATA_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
 [[ -r "$HOME/.asdf/asdf.sh" ]] && source "$HOME/.asdf/asdf.sh"
@@ -41,12 +43,19 @@ if (( $+commands[pyenv] )); then
   eval "$(pyenv init - zsh)"
 fi
 
-if [[ -r "$HOME/antigen.zsh" && -r "$HOME/.antigenrc" ]] && (( $+commands[git] )); then
-  source "$HOME/antigen.zsh"
-  antigen init "$HOME/.antigenrc"
+for completion_directory in "${XDG_DATA_HOME:-$HOME/.local/share}/zsh-completions/src" "${HOMEBREW_PREFIX:-/usr/local}/share/zsh-completions" /usr/local/share/zsh-completions /usr/share/zsh-completions; do
+  [[ -d "$completion_directory" ]] && fpath=("$completion_directory" $fpath)
+done
+unset completion_directory
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' matcher-list ''
+zstyle ':completion:*' menu select
+
+export STARSHIP_CONFIG="${STARSHIP_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml}"
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
 else
-  autoload -Uz compinit
-  compinit
   PROMPT='%n@%m %~ %# '
 fi
 
@@ -110,3 +119,12 @@ alias k8s-1='ssh profburial@192.168.1.207'
 if [[ -r "$HOME/.zshrc.local" ]]; then
   source "$HOME/.zshrc.local"
 fi
+
+# Highlighting must load after widgets and local keybindings are defined.
+for highlighting_script in "${XDG_DATA_HOME:-$HOME/.local/share}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" "${HOMEBREW_PREFIX:-/usr/local}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+  if [[ -r "$highlighting_script" ]]; then
+    source "$highlighting_script"
+    break
+  fi
+done
+unset highlighting_script

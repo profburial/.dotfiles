@@ -18,13 +18,23 @@ bash install.sh
 exec zsh
 ```
 
-The installer requires Bash and standard system utilities. Install Zsh and Git before starting the configured shell. Git and network access are needed on the first shell launch to download the Antigen plugins and Spaceship theme; Oh My Zsh is loaded through Antigen, so a separate installation is unnecessary. With Antigen or Git absent, the shell uses basic completion and a plain prompt.
+The installer requires Bash and standard system utilities. It installs missing shell dependencies before linking configuration: Zsh, Starship, zsh-completions and zsh-syntax-highlighting. Existing installations are kept, and reruns do not update them.
+
+On macOS it uses Homebrew, downloading the [official Homebrew installer](https://brew.sh/) if Homebrew is absent. Homebrew setup may request administrator access. Only missing formulae are passed to `brew install`.
+
+On Linux it supports Ubuntu/Debian (`apt-get`), Fedora (`dnf`) and Arch (`pacman`). It installs missing Zsh and download tools with the system package manager, using sudo when not running as root. Missing Starship is installed through its [official installer](https://starship.rs/) into `~/.local/bin`. If no system copy of a plugin is found, the installer clones zsh-completions **0.36.0** and zsh-syntax-highlighting **0.8.0** into `${XDG_DATA_HOME:-$HOME/.local/share}`. Both XDG directory overrides must be absolute paths. Incomplete local plugin directories are reported rather than overwritten.
+
+Network access is needed only when dependencies are missing. Package or download failures stop installation before configuration links are changed. Successfully installed dependencies remain available for a retry. Application packages, fonts and language runtimes remain separate prerequisites.
+
+The shell recognizes the user-local plugin locations, Homebrew's share directories, `/usr/local/share/zsh-completions`, `/usr/share/zsh-completions` and the corresponding syntax-highlighting paths. Distribution-provided completions also use Zsh's default `fpath`.
+
+Shell startup does not download plugins. If Starship is absent, the shell uses a plain prompt; completion still works without the optional extra definitions. Syntax highlighting is enabled when its script is installed.
 
 The installer uses the checkout's actual location and `${XDG_CONFIG_HOME:-$HOME/.config}`. Keep the checkout in place because installed files are symlinks. It installs AeroSpace only on macOS. K9s gets shared config, aliases and skins; cluster state and screen dumps stay local. Herdr gets only `config.toml`; its session, logs and socket stay local. Ghostty supplies both `config` and `config.ghostty` filenames for compatibility across versions.
 
 Existing files, directories and conflicting symlinks are moved to adjacent `.backup.TIMESTAMP` paths, with a numeric suffix when needed. The installer prints each backup location. Correct links are left alone on reruns. Neovim data, cache and state are preserved. To restore a config, remove only the installed symlink after checking its destination, then move its backup back into place. With the old installer, the K9s directory itself may have been a symlink; it is backed up before individual files are linked.
 
-This installs configuration, not application packages, fonts or language runtimes. Install only the applications used on each machine with its package manager. To make Zsh the login shell, use `chsh -s "$(command -v zsh)"` after ensuring that path is listed in `/etc/shells`.
+Install the applications used on each machine with its package manager. To make Zsh the login shell, use `chsh -s "$(command -v zsh)"` after ensuring that path is listed in `/etc/shells`.
 
 ## Neovim
 
@@ -51,6 +61,14 @@ Run these commands from the dotfiles root. The saved lockfile protects the inten
 
 See [TVIM's README](nvim/README.md) for shortcuts, formatting, language setup and maintenance commands.
 
+## Shell
+
+Zsh runs directly without Oh My Zsh or Antigen. Tab completion is case-sensitive and supports menu selection. Command spelling correction is disabled. History is saved to `~/.zsh_history` and shared across shells; commands starting with a space are excluded. The shell uses Emacs editing keys and allows changing directories by typing their path.
+
+`starship.toml` supplies a Spaceship-like two-line prompt: directory, Git branch/status, detected language versions, AWS profile/region, Kubernetes context/namespace and command duration above a green input arrow that turns red after failure. AWS information is shown when available, even without detected credentials; Kubernetes reads the current kubeconfig. These modules use Starship's [configuration options](https://starship.rs/config/). Ghostty already selects a Nerd Font.
+
+The installer links the prompt config at `${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml`. Set `STARSHIP_CONFIG` before shell initialization to select a different file. Old `~/antigen.zsh` and `~/.antigenrc` symlinks pointing into this checkout are moved to backup paths; unrelated files and plugin caches are left alone. The Antigen sources are removed from this checkout, so restoring those old links requires restoring the corresponding repository revision too. Oh My Zsh plugin aliases and helpers are no longer loaded; custom functions and aliases in `.zshrc` are retained.
+
 ## Machine settings
 
 Put private or machine-specific settings in `~/.zshrc.local`.
@@ -66,10 +84,10 @@ Run the isolated installer and shell checks with Bash, Python 3 and Zsh:
 ```sh
 bash tests/run.sh
 bash -n install.sh tests/run.sh
-zsh -n .zshrc .antigenrc
+zsh -n .zshrc
 ```
 
-Tests use temporary homes and do not modify the real home directory or download plugins. Linux and Darwin installer branches are checked with a controlled `uname`; native macOS execution still needs a macOS host.
+Tests use temporary homes and package/download fixtures; they do not modify the real home directory, install real packages or download plugins. Linux and Darwin installer branches are checked with a controlled `uname`. Native package installation still needs validation on the target operating system.
 
 For Neovim development, the integration suite uses the retained launcher to isolate test dependencies from the default profile. It requires Python 3.9+ and a provisioned `tvim` plugin/parser tree. From the dotfiles root:
 
